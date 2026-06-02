@@ -229,7 +229,7 @@ $data = $stmt->get_result()->fetch_assoc();
                 </div>
             </div>
 
-            <span class="brand-text">South Nyanza Teachers Union</span>
+            <span class="brand-text">SNAT Union</span>
 
             <!-- Replace with your real logo path -->
             <img src="assets/logo.png" class="card-logo" alt="SNAT Logo">
