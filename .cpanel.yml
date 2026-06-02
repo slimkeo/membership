@@ -10,4 +10,4 @@ deployment:
     - /bin/cp -R * $DEPLOYPATH/
 
     # REMOVE sensitive config AFTER COPY
-    - /bin/rm -f $DEPLOYPATH/xyz/config.php
+    #- /bin/rm -f $DEPLOYPATH/xyz/config.php

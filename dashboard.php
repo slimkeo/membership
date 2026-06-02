@@ -192,7 +192,7 @@ $data = $stmt->get_result()->fetch_assoc();
 
             <div class="card-header">
                 <div>
-                    <h3 class="card-title">SNAT MEMBERSHIP CARD</h3>
+                    <h3 class="card-title">SNAT MEMBERSHIP PROFILE</h3>
                     <p class="union-no">Union No: 058-<?= $data['id'] ?></p>
                 </div>
             </div>
