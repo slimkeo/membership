@@ -50,70 +50,119 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Member Login - SNAT</title>
+    <title>SNAT Member Login</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
         body {
-            background: #f4f6f9;
+            background: linear-gradient(135deg, #003087, #0055cc);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .login-box {
-            margin-top: 80px;
+            width: 100%;
+            max-width: 420px;
             background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .logo img {
+            width: 90px;
         }
 
         .title {
             text-align: center;
             margin-bottom: 20px;
+            font-weight: bold;
+            color: #003087;
+        }
+
+        .btn-primary {
+            background: #003087;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #002266;
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .login-box {
+                width: 100%;
+                border-radius: 8px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
-    <div class="col-md-4 col-md-offset-4 login-box">
+<div class="login-box">
 
-        <h3 class="title">
-            <i class="fa fa-user"></i> Member Login
-        </h3>
-
-        <?php if ($message): ?>
-            <div class="alert alert-danger"><?= $message ?></div>
-        <?php endif; ?>
-
-        <form method="POST">
-
-            <div class="form-group">
-                <label>Cell Number</label>
-                <input type="text" name="cellnumber"
-                       class="form-control"
-                       placeholder="268XXXXXXXX"
-                       required>
-            </div>
-
-            <div class="form-group">
-                <label>Last 6 Digits of ID Number</label>
-                <input type="text" name="last6"
-                       class="form-control"
-                       maxlength="6"
-                       placeholder="******"
-                       required>
-            </div>
-
-            <button class="btn btn-primary btn-block">
-                <i class="fa fa-sign-in"></i> Login
-            </button>
-
-        </form>
-
+    <div class="logo">
+        <img src="assets/SNATLOGO.png" alt="SNAT">
     </div>
+
+    <h4 class="title">
+        <i class="fa fa-user-circle"></i> Member Login
+    </h4>
+
+    <?php if ($message): ?>
+        <div class="alert alert-danger text-center">
+            <?= $message ?>
+        </div>
+    <?php endif; ?>
+
+    <form method="POST">
+
+        <div class="form-group">
+            <label>Cell Number</label>
+            <input type="text"
+                   name="cellnumber"
+                   class="form-control input-lg"
+                   placeholder="268XXXXXXXX"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>Last 6 Digits of ID Number</label>
+            <input type="text"
+                   name="last6"
+                   class="form-control input-lg"
+                   maxlength="6"
+                   placeholder="******"
+                   required>
+        </div>
+
+        <button class="btn btn-primary btn-lg full-width">
+            <i class="fa fa-sign-in"></i> Login
+        </button>
+
+    </form>
+
 </div>
 
 </body>
