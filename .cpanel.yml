@@ -1,0 +1,13 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/snatbur1/membership.snatunion.com/
+
+    # Ensure directory exists
+    - /bin/mkdir -p $DEPLOYPATH
+
+    # Copy ALL project files
+    - /bin/cp -R * $DEPLOYPATH/
+
+    # REMOVE sensitive config AFTER COPY
+    - /bin/rm -f $DEPLOYPATH/xyz/config.php
