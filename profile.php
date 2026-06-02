@@ -7,6 +7,10 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $member_id = $_SESSION['id'];
 
 /* GET DATA */
