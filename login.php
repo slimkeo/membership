@@ -2,14 +2,37 @@
 session_start();
 require_once 'xyz/config.php';
 
+function normalizeSwaziNumber($number) {
+
+    // remove spaces, plus sign, dashes
+    $number = preg_replace('/[^0-9]/', '', $number);
+
+    // if already full format 268XXXXXXXX
+    if (strlen($number) === 11 && substr($number, 0, 3) === "268") {
+        return $number;
+    }
+
+    // if user typed 8 digits (local format)
+    if (strlen($number) === 8) {
+        return "268" . $number;
+    }
+
+    // fallback return original cleaned number
+    return $number;
+}
+
+
+
+
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $cellnumber = trim($_POST['cellnumber'] ?? '');
+    $cellnumber_raw = trim($_POST['cellnumber'] ?? '');
+    $cellnumber = normalizeSwaziNumber($cellnumber_raw);
     $last6 = trim($_POST['last6'] ?? '');
 
-    if (strlen($cellnumber) < 10 || strlen($last6) != 6) {
+    if (strlen($cellnumber) != 11 || strlen($last6) != 6) {
         $message = "Invalid login details.";
     } else {
 
