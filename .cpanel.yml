@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/snatbur1/membership.snatunion.com/
+    - export DEPLOYPATH=/home/snatuni1/membership.snatunion.com/
 
     # Ensure directory exists
     - /bin/mkdir -p $DEPLOYPATH
