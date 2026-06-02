@@ -7,10 +7,6 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $member_id = $_SESSION['id'];
 
 /* GET DATA */
@@ -39,11 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jacket = $_POST['jacket_size'];
     $waist = $_POST['waist_size'];
 
+    /* PROFILE IMAGE UPLOAD */
     $profile_url = $data['url'] ?? null;
 
     if (!empty($_FILES['profile_pic']['name'])) {
 
         $folder = "uploads/";
+
         if (!is_dir($folder)) {
             mkdir($folder, 0777, true);
         }
@@ -56,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    /* UPDATE MEMBERS */
     $stmt = $conn->prepare("
         UPDATE members 
         SET surname=?, name=?, cellnumber=?, institution=?, url=?
@@ -73,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
     $stmt->execute();
 
+    /* UPSERT SIZES */
     $stmt = $conn->prepare("
         INSERT INTO member_profile_sizes
         (member_id, tshirt_size, hoodie_size, jacket_size, waist_size)
@@ -84,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         waist_size=VALUES(waist_size)
     ");
 
-    $stmt->bind_param("issss",
+    $stmt->bind_param(
+        "issss",
         $member_id,
         $tshirt,
         $hoodie,
@@ -104,171 +105,125 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Edit Profile</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
-        body {
-            background: #eef2f7;
-            margin: 0;
-            padding: 0;
-        }
-
-        .top-bar {
-            background: #003087;
-            color: #fff;
-            padding: 12px 15px;
-            font-size: 16px;
-        }
-
-        .container-fluid {
-            padding: 0;
-        }
-
-        .form-area {
-            padding: 15px;
-        }
-
-        .section-title {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #003087;
-        }
-
-        .btn-save {
-            background: #28a745;
-            color: #fff;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-        }
-
-        .form-control {
-            height: 45px;
-            font-size: 15px;
-        }
-
-        label {
-            font-size: 14px;
-        }
-
-        .spacer {
-            height: 70px;
+        body { background:#f4f6f9; }
+        .card {
+            background:#fff;
+            padding:25px;
+            margin-top:20px;
+            border-radius:8px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 
 <body>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-    <i class="fa fa-edit"></i> Edit Profile
-</div>
+<div class="container">
 
-<div class="container-fluid form-area">
+<div class="card">
+
+<h3><i class="fa fa-edit"></i> Edit Profile</h3>
 
 <form method="POST" enctype="multipart/form-data">
 
-    <!-- KYC -->
-    <div class="form-group">
-        <label>Surname</label>
-        <input type="text" name="surname" class="form-control"
-               value="<?= $data['surname'] ?>">
-    </div>
+<!-- KYC -->
+<div class="form-group">
+    <label>Surname</label>
+    <input type="text" name="surname" class="form-control"
+           value="<?= $data['surname'] ?>">
+</div>
 
-    <div class="form-group">
-        <label>Name</label>
-        <input type="text" name="name" class="form-control"
-               value="<?= $data['name'] ?>">
-    </div>
+<div class="form-group">
+    <label>Name</label>
+    <input type="text" name="name" class="form-control"
+           value="<?= $data['name'] ?>">
+</div>
 
-    <div class="form-group">
-        <label>Cell Number</label>
-        <input type="text" name="cellnumber" class="form-control"
-               value="<?= $data['cellnumber'] ?>">
-    </div>
+<div class="form-group">
+    <label>Cell Number</label>
+    <input type="text" name="cellnumber" class="form-control"
+           value="<?= $data['cellnumber'] ?>">
+</div>
 
-    <div class="form-group">
-        <label>Institution</label>
-        <input type="text" name="institution" class="form-control"
-               value="<?= $data['institution'] ?>">
-    </div>
+<div class="form-group">
+    <label>Institution</label>
+    <input type="text" name="institution" class="form-control"
+           value="<?= $data['institution'] ?>">
+</div>
 
-    <hr>
+<hr>
 
-    <h4 class="section-title"><i class="fa fa-shopping-bag"></i> Sizes</h4>
+<h4><i class="fa fa-shopping-bag"></i> Merchandise Sizes</h4>
 
-    <?php
-    $sizes = ['XS','S','M','L','XL','XXL','XXXL','XXXXL'];
-    $waists = ['26','28','30','32','34','36','38','40','42','44','46','48','50','52','54','56','58','60'];
-    ?>
+<?php
+$sizes = ['XS','S','M','L','XL','XXL','XXXL','XXXXL'];
+$waists = ['26','28','30','32','34','36','38','40','42','44','46','48','50','52','54','56','58','60'];
+?>
 
-    <div class="form-group">
-        <label>T-Shirt</label>
-        <select name="tshirt_size" class="form-control">
-            <?php foreach($sizes as $s) { ?>
-                <option value="<?= $s ?>" <?= ($data['tshirt_size']==$s?'selected':'') ?>>
-                    <?= $s ?>
-                </option>
-            <?php } ?>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Hoodie</label>
-        <select name="hoodie_size" class="form-control">
-            <?php foreach($sizes as $s) { ?>
-                <option value="<?= $s ?>" <?= ($data['hoodie_size']==$s?'selected':'') ?>>
-                    <?= $s ?>
-                </option>
-            <?php } ?>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Jacket</label>
-        <select name="jacket_size" class="form-control">
-            <?php foreach($sizes as $s) { ?>
-                <option value="<?= $s ?>" <?= ($data['jacket_size']==$s?'selected':'') ?>>
-                    <?= $s ?>
-                </option>
-            <?php } ?>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Waist</label>
-        <select name="waist_size" class="form-control">
-            <?php foreach($waists as $w) { ?>
-                <option value="<?= $w ?>" <?= ($data['waist_size']==$w?'selected':'') ?>>
-                    <?= $w ?>
-                </option>
-            <?php } ?>
+<div class="form-group">
+    <label>T-Shirt Size</label>
+    <select name="tshirt_size" class="form-control">
+        <?php foreach($sizes as $s) { ?>
+            <option value="<?= $s ?>" <?= ($data['tshirt_size']==$s?'selected':'') ?>>
+                <?= $s ?>
+            </option>
         <?php } ?>
     </select>
-    </div>
+</div>
 
-    <hr>
+<div class="form-group">
+    <label>Hoodie Size</label>
+    <select name="hoodie_size" class="form-control">
+        <?php foreach($sizes as $s) { ?>
+            <option value="<?= $s ?>" <?= ($data['hoodie_size']==$s?'selected':'') ?>>
+                <?= $s ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
 
-    <div class="form-group">
-        <label>Profile Picture</label>
-        <input type="file" name="profile_pic" class="form-control">
-    </div>
+<div class="form-group">
+    <label>Jacket Size</label>
+    <select name="jacket_size" class="form-control">
+        <?php foreach($sizes as $s) { ?>
+            <option value="<?= $s ?>" <?= ($data['jacket_size']==$s?'selected':'') ?>>
+                <?= $s ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
 
-    <div class="spacer"></div>
+<div class="form-group">
+    <label>Waist Size</label>
+    <select name="waist_size" class="form-control">
+        <?php foreach($waists as $w) { ?>
+            <option value="<?= $w ?>" <?= ($data['waist_size']==$w?'selected':'') ?>>
+                <?= $w ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
 
-    <button type="submit" class="btn-save">
-        <i class="fa fa-save"></i> Save Changes
-    </button>
+<hr>
+
+<div class="form-group">
+    <label>Profile Picture</label>
+    <input type="file" name="profile_pic" class="form-control">
+</div>
+
+<br>
+
+<button class="btn btn-success btn-block">
+    <i class="fa fa-save"></i> Save Changes
+</button>
 
 </form>
+
+</div>
 
 </div>
 
