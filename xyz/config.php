@@ -2,6 +2,15 @@
 // =============================================
 // FILE: config.php
 // =============================================
+// Show all PHP errors (Development Mode)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Optional: Also show errors in HTML format with colors
+//error_reporting(E_ALL | E_STRICT);
+
+
 $host     = "localhost";
 $db_user  = "snatuni1_user";
 $db_pass  = "Snat2026!";
