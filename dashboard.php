@@ -17,8 +17,7 @@ e.description AS employment_type,
 s.tshirt_size,
 s.hoodie_size,
 s.jacket_size,
-s.waist_size,
-s.profile_picture
+s.waist_size
 FROM members m
 LEFT JOIN branches b ON b.id = m.branch
 LEFT JOIN employement_status e ON e.id = m.employment_status
@@ -36,14 +35,27 @@ $data = $stmt->get_result()->fetch_assoc();
 <html>
 <head>
     <title>SNAT Dashboard</title>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
         body { background:#f4f6f9; }
-        .card { background:#fff; padding:20px; border-radius:8px; margin-top:20px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
-        .profile-icon { font-size:120px; color:#003087; }
-        .label-title { font-weight:bold; }
+        .card {
+            background:#fff;
+            padding:25px;
+            margin-top:20px;
+            border-radius:8px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+        .profile-img {
+            width:140px;
+            height:140px;
+            border-radius:50%;
+        }
+        .top-bar {
+            margin-top:15px;
+        }
     </style>
 </head>
 
@@ -51,12 +63,24 @@ $data = $stmt->get_result()->fetch_assoc();
 
 <div class="container">
 
+    <!-- TOP BAR -->
+    <div class="top-bar text-right">
+        <a href="profile.php" class="btn btn-primary btn-sm">
+            <i class="fa fa-edit"></i> Edit Profile
+        </a>
+
+        <a href="logout.php" class="btn btn-danger btn-sm">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+    </div>
+
     <div class="card text-center">
 
-        <?php if (!empty($data['profile_picture'])) { ?>
-            <img src="<?= $data['profile_picture'] ?>" class="img-circle" style="width:140px;height:140px;">
+        <!-- PROFILE IMAGE -->
+        <?php if (!empty($data['url'])) { ?>
+            <img src="<?= $data['url'] ?>" class="profile-img">
         <?php } else { ?>
-            <i class="fa fa-user-circle profile-icon"></i>
+            <i class="fa fa-user-circle" style="font-size:140px;color:#003087;"></i>
         <?php } ?>
 
         <h3>SNAT Union No: 058-<?= $data['id'] ?></h3>
@@ -66,34 +90,33 @@ $data = $stmt->get_result()->fetch_assoc();
         <div class="row text-left">
 
             <div class="col-md-6">
-                <p><span class="label-title">Name:</span> <?= strtoupper($data['name'].' '.$data['surname']) ?></p>
-                <p><span class="label-title">ID Number:</span> <?= $data['idnumber'] ?></p>
-                <p><span class="label-title">Cell:</span> <?= $data['cellnumber'] ?></p>
-                <p><span class="label-title">Gender:</span> <?= $data['gender'] ?></p>
+                <p><b>Name:</b> <?= strtoupper($data['name'].' '.$data['surname']) ?></p>
+                <p><b>ID Number:</b> <?= $data['idnumber'] ?></p>
+                <p><b>Cell Number:</b> <?= $data['cellnumber'] ?></p>
+                <p><b>Gender:</b> <?= $data['gender'] ?></p>
+                <p><b>DOB:</b> <?= $data['dob'] ?></p>
             </div>
 
             <div class="col-md-6">
-                <p><span class="label-title">Branch:</span> <?= $data['branch_name'] ?></p>
-                <p><span class="label-title">Institution:</span> <?= $data['institution'] ?></p>
-                <p><span class="label-title">Employment:</span> <?= $data['employment_type'] ?></p>
+                <p><b>Branch:</b> <?= $data['branch_name'] ?></p>
+                <p><b>Institution:</b> <?= $data['institution'] ?></p>
+                <p><b>Employment:</b> <?= $data['employment_type'] ?></p>
+                <p><b>Employee No:</b> <?= $data['employeeno'] ?></p>
+                <p><b>TSC No:</b> <?= $data['tscno'] ?></p>
             </div>
 
         </div>
 
         <hr>
 
-        <h4>Merchandise Sizes</h4>
+        <h4><i class="fa fa-shopping-bag"></i> Merchandise Sizes</h4>
 
-        <p><b>T-Shirt:</b> <?= $data['tshirt_size'] ?? '-' ?></p>
-        <p><b>Hoodie:</b> <?= $data['hoodie_size'] ?? '-' ?></p>
-        <p><b>Jacket:</b> <?= $data['jacket_size'] ?? '-' ?></p>
-        <p><b>Waist:</b> <?= $data['waist_size'] ?? '-' ?></p>
-
-        <br>
-
-        <a href="profile.php" class="btn btn-primary">
-            <i class="fa fa-edit"></i> Edit Profile
-        </a>
+        <div class="row text-left">
+            <div class="col-md-3"><b>T-Shirt:</b> <?= $data['tshirt_size'] ?? '-' ?></div>
+            <div class="col-md-3"><b>Hoodie:</b> <?= $data['hoodie_size'] ?? '-' ?></div>
+            <div class="col-md-3"><b>Jacket:</b> <?= $data['jacket_size'] ?? '-' ?></div>
+            <div class="col-md-3"><b>Waist:</b> <?= $data['waist_size'] ?? '-' ?></div>
+        </div>
 
     </div>
 
